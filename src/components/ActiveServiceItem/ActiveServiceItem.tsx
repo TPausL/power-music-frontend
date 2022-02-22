@@ -1,66 +1,45 @@
 import {
+  faChevronDown,
+  faChevronUp,
+  faRefresh,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
   Avatar,
-  Button,
   Collapse,
   IconButton,
   List,
   ListItem,
   ListItemAvatar,
   ListItemButton,
-  ListItemIcon,
   ListItemSecondaryAction,
   ListItemText,
 } from "@mui/material";
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faChevronDown,
-  faChevronUp,
-  faRefresh,
-} from "@fortawesome/free-solid-svg-icons";
-import { useTheme } from "@mui/system";
 
-interface CommonProps {
+export type ActiveServiceItemProps = {
   name: string;
-}
-
-export type ActiveProps = {
-  active: true;
   user: {
     name: string;
     email: string;
     icon?: string;
   };
-  login?: () => void;
+  refresh?: () => void;
 };
-export type InactiveProps = {
-  active?: false;
-  login: () => void;
-  user?: {
-    name: string;
-    email: string;
-    icon?: string;
-  };
-};
-
-export type ServiceItemProps = CommonProps & (ActiveProps | InactiveProps);
-export default function ServiceItem(props: ServiceItemProps) {
-  const { name, active, login, user } = props;
+export default function ActiveServiceItem(props: ActiveServiceItemProps) {
   const [open, setOpen] = React.useState(false);
-
+  const { name, user, refresh } = props;
   return (
     <>
       <ListItemButton onClick={() => setOpen(!open)}>
         <ListItemAvatar sx={{ minWidth: 0, pr: 1 }}>
           <Avatar
             sx={{
-              bgcolor: active ? "success.main" : "error.main",
+              bgcolor: "error.main",
               width: 24,
               height: 24,
             }}
-          >
-            {""}
-          </Avatar>
+          ></Avatar>
         </ListItemAvatar>
         <ListItemText>{name}</ListItemText>
         <FontAwesomeIcon icon={open ? faChevronUp : faChevronDown} />
@@ -68,9 +47,33 @@ export default function ServiceItem(props: ServiceItemProps) {
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           <ListItem>
-            {active ? (
-              <>
-                <ListItemAvatar sx={{ minWidth: 56 }}>
+            <ListItemAvatar sx={{ minWidth: 56 }}>
+              <Avatar src={user?.icon}>{user?.name[0]}</Avatar>
+            </ListItemAvatar>
+            <ListItemText secondary={user?.email}>{user?.name}</ListItemText>
+            {refresh && (
+              <ListItemSecondaryAction>
+                <IconButton
+                  onClick={refresh}
+                  color="secondary"
+                  edge="end"
+                  sx={{ mr: 0.25 }}
+                >
+                  <FontAwesomeIcon icon={faRefresh} />
+                </IconButton>
+              </ListItemSecondaryAction>
+            )}
+          </ListItem>
+        </List>
+      </Collapse>
+    </>
+  );
+}
+
+/**
+ * 
+ * 
+ * <ListItemAvatar sx={{ minWidth: 56 }}>
                   <Avatar src={user?.icon}>{user?.name[0]}</Avatar>
                 </ListItemAvatar>
                 <ListItemText secondary={user?.email}>
@@ -81,15 +84,4 @@ export default function ServiceItem(props: ServiceItemProps) {
                     <FontAwesomeIcon icon={faRefresh} />
                   </IconButton>
                 </ListItemSecondaryAction>
-              </>
-            ) : (
-              <Button variant="contained" onClick={login}>
-                Login
-              </Button>
-            )}
-          </ListItem>
-        </List>
-      </Collapse>
-    </>
-  );
-}
+ */
