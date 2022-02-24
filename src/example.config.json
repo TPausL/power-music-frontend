@@ -1,11 +1,11 @@
 {
-    "client_id": "",
-    "client_secret": "",
-    "backend_uri": "",
-    "backend_host": "",
-    "self": {
-        "https": true,
-        "host": "",
-        "port": 80
-    }
+  "client_id": "",
+  "client_secret": "",
+  "backend_uri": "",
+  "backend_host": "",
+  "self": {
+    "https": true,
+    "host": "",
+    "port": 80
+  }
 }
