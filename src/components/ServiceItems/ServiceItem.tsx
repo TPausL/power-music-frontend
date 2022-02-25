@@ -1,14 +1,16 @@
 import React from "react";
 import { YoutubeServiceItem } from ".";
+import { ServiceUser } from "../UserProvider/UserProvider";
+import SpotifyServiceItem from "./SpotifyServiceItem";
 export interface ServiceItemProps {
-  service: "youtube" | "spotify";
+  user: ServiceUser;
 }
 function ServiceItem(props: ServiceItemProps) {
-  switch (props.service) {
+  switch (props.user.service) {
     case "spotify":
-      return <>not implemented</>;
+      return <SpotifyServiceItem {...props} />;
     case "youtube":
-      return <YoutubeServiceItem />;
+      return <YoutubeServiceItem {...props} />;
     default:
       throw new Error("invalid service");
   }

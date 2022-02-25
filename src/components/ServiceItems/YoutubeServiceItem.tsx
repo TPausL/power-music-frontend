@@ -1,6 +1,11 @@
+import { faYoutube } from "@fortawesome/free-brands-svg-icons";
 import React from "react";
+import { ServiceUser } from "../UserProvider/UserProvider";
+import SkeletonItem from "./SkeletonItem";
 
-export interface YoutubeServiceItemProps {}
+export interface YoutubeServiceItemProps {
+  user: ServiceUser;
+}
 export default function YoutubeServiceItem(props: YoutubeServiceItemProps) {
-  return <div>yt</div>;
+  return <SkeletonItem icon={faYoutube} {...props} />;
 }

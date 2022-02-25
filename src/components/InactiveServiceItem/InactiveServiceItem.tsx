@@ -1,31 +1,23 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Avatar,
   Button,
-  Collapse,
-  IconButton,
-  List,
   ListItem,
   ListItemAvatar,
-  ListItemButton,
-  ListItemIcon,
   ListItemSecondaryAction,
   ListItemText,
 } from "@mui/material";
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faChevronDown,
-  faChevronUp,
-  faRefresh,
-} from "@fortawesome/free-solid-svg-icons";
+import { useUser } from "../UserProvider";
+import { Service } from "../UserProvider/UserProvider";
 
 export type InactiveServiceItemProps = {
-  name: string;
-  login: () => void;
+  service: Service;
 };
-export default function InactiveServiceItem(props: InactiveServiceItemProps) {
-  const { name, login } = props;
 
+export default function InactiveServiceItem(props: InactiveServiceItemProps) {
+  const { service } = props;
+  const user = useUser();
   return (
     <>
       <ListItem>
@@ -33,14 +25,19 @@ export default function InactiveServiceItem(props: InactiveServiceItemProps) {
           <Avatar
             sx={{
               bgcolor: "error.main",
-              width: 24,
-              height: 24,
+              width: 36,
+              height: 36,
             }}
-          ></Avatar>
+          >
+            <FontAwesomeIcon size="lg" icon={["fab", service]} />
+          </Avatar>
         </ListItemAvatar>
-        <ListItemText>{name}</ListItemText>
+        <ListItemText>{service}</ListItemText>
         <ListItemSecondaryAction>
-          <Button variant="contained" onClick={login}>
+          <Button
+            variant="contained"
+            onClick={() => user.connectService(service)}
+          >
             Login
           </Button>
         </ListItemSecondaryAction>
