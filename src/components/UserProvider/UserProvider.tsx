@@ -81,6 +81,7 @@ export default function UserProvider(props: UserProviderProps) {
     const redirect_uri = `http${config.self.https ? "s" : ""}://${
       config.self.host
     }:${config.self.port}/auth/callback`;
+    console.log(redirect_uri);
     params.append("client_id", config.client_id);
     params.append("redirect_uri", redirect_uri);
     params.append("response_type", "code");
