@@ -26,7 +26,11 @@ export default function Router(props: RouterProps) {
       if (!moment().isAfter(moment(s[1]))) {
         axios.defaults.headers.common["Authorization"] = "Bearer " + s[0];
         user.fetch().then(() => setLoaded(true));
+      } else {
+        setLoaded(true);
       }
+    } else {
+      setLoaded(true);
     }
   }, []);
   return (

@@ -17,6 +17,15 @@ export default function Login(props: LoginProps) {
   const theme = useTheme();
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+
+  React.useEffect(() => {
+    document.addEventListener("keypress", (e) => {
+      console.log(e.key);
+      if (e.key === "Enter") {
+        user.login(email, password);
+      }
+    });
+  }, []);
   return (
     <Box
       sx={{
