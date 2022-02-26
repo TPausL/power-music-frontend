@@ -4,23 +4,23 @@ import "typeface-dm-sans";
 export const theme = createTheme({
   palette: {
     primary: {
-      main: "#41393E",
+      main: "#e69bf9",
     },
     secondary: {
-      main: "#3dffb7",
+      main: "#41313E",
     },
     success: {
-      main: "#06D6A0",
+      main: "#18e543",
     },
     background: {
-      default: "#fff6ef",
-      paper: "#FFF1E6",
+      default: "#FFF1E6",
+      paper: "#fffdf8",
     },
     info: {
-      main: "#1B9AAA",
+      main: "#54b4f2",
     },
     warning: {
-      main: "#FFC43D",
+      main: "#e3e500",
     },
     error: {
       main: "#EF476F",

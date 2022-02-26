@@ -4,124 +4,153 @@ import {
   Box,
   Button,
   InputAdornment,
-  TextField,
+  InputBase,
+  Paper,
   Typography,
   useTheme,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useUser } from "../UserProvider";
 
 export interface LoginProps {}
 export default function Login(props: LoginProps) {
   const user = useUser();
   const theme = useTheme();
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [email, setEmail] = useState<string | undefined>(undefined);
+  const [password, setPassword] = useState<string | undefined>(undefined);
 
-  React.useEffect(() => {
+  useEffect(() => {
     document.addEventListener("keypress", (e) => {
       console.log(e.key);
       if (e.key === "Enter") {
-        user.login(email, password);
+        if (password && email) {
+          user.login(email, password);
+        }
       }
     });
   }, []);
   return (
-    <Box
-      sx={{
-        height: 1,
-        width: 1,
-        display: "flex",
-        flexDirection: "column",
-        bgcolor: "primary.main",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
+    <>
+      <img
+        src="/background.svg"
+        style={{
+          position: "absolute",
+          height: "100vh",
+          width: "100vw",
+          objectFit: "cover",
+        }}
+      />
       <Box
         sx={{
-          height: 0.5,
-          width: 0.3,
-          bgcolor: "secondary.main",
-          borderRadius: theme.shape.borderRadius,
+          height: 1,
+          width: 1,
           display: "flex",
           flexDirection: "column",
-          alignItems: "space-around",
+          bgcolor: "transparent",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        <Typography
-          style={{
-            flex: 3,
-            color: "#fff",
-            textAlign: "center",
-            fontSize: "4em",
-            fontWeight: "bold",
-          }}
-        >
-          Login
-        </Typography>
-        <TextField
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <FontAwesomeIcon color={"#fff"} icon={faEnvelope} />
-              </InputAdornment>
-            ),
-          }}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-          value={email}
-          style={{
-            color: "#fff",
-            flex: 1,
-            width: "60%",
-            alignSelf: "center",
-            margin: theme.spacing(2),
-          }}
-          title="email"
-          type="email"
-        ></TextField>
-        <TextField
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <FontAwesomeIcon color={"#fff"} icon={faKey} />
-              </InputAdornment>
-            ),
-          }}
-          hidden
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          style={{
-            color: "#fff",
-            flex: 1,
-            width: "60%",
-            alignSelf: "center",
-            margin: theme.spacing(2),
-          }}
-          title="email"
-          type="password"
-        ></TextField>
-        <div
-          style={{
-            flex: 3,
-            width: "60%",
+        <Paper
+          elevation={6}
+          sx={{
+            height: 0.5,
+            width: 0.3,
+            bgcolor: "primary.main",
+            borderRadius: theme.shape.borderRadius,
             display: "flex",
-            alignSelf: "center",
-            alignItems: "center",
+            flexDirection: "column",
+            alignItems: "space-around",
             justifyContent: "center",
+            zIndex: 5,
           }}
         >
-          <Button
-            onClick={() => user.login(email, password)}
-            variant="contained"
-            color="primary"
-            style={{ height: "40%", width: "70%" }}
+          <Typography
+            style={{
+              flex: 3,
+              color: "#fff",
+              textAlign: "center",
+              fontSize: "4em",
+              fontWeight: "bold",
+            }}
           >
             Login
-          </Button>
-        </div>
+          </Typography>
+          <InputBase
+            startAdornment={
+              <InputAdornment position="start">
+                <FontAwesomeIcon
+                  color={"#fff"}
+                  size="2x"
+                  style={{ marginRight: 8 }}
+                  icon={faEnvelope}
+                />
+              </InputAdornment>
+            }
+            color="secondary"
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
+            sx={{
+              flex: 1,
+              width: "60%",
+              alignSelf: "center",
+              margin: 2,
+              fontSize: "1.25rem",
+              border: "hidden",
+            }}
+            title="email"
+            type="email"
+          ></InputBase>
+          <InputBase
+            startAdornment={
+              <InputAdornment position="start">
+                <FontAwesomeIcon
+                  color={"#fff"}
+                  style={{ marginRight: 8 }}
+                  size="2x"
+                  icon={faKey}
+                />
+              </InputAdornment>
+            }
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            sx={{
+              flex: 1,
+              width: 0.6,
+              alignSelf: "center",
+              margin: 2,
+              fontSize: "1.25rem",
+              minWidth: "20%",
+            }}
+            color="secondary"
+            title="email"
+            type="password"
+          />
+          <div
+            style={{
+              flex: 3,
+              width: "60%",
+              display: "flex",
+              alignSelf: "center",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Button
+              onClick={() => {
+                if (password && email) {
+                  user.login(email, password);
+                }
+              }}
+              variant="contained"
+              color="secondary"
+              style={{ height: "40%", width: "70%" }}
+            >
+              Login
+            </Button>
+          </div>
+        </Paper>
       </Box>
-    </Box>
+    </>
   );
 }
