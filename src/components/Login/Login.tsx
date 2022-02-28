@@ -30,14 +30,43 @@ export default function Login(props: LoginProps) {
     });
   }, []);
   return (
-    <>
+    <div
+      style={{
+        background: "linear-gradient(45deg, #11b8ed, #3b8cf0)",
+        width: "100vw",
+        height: "100vh",
+      }}
+    >
       <img
-        src="/background.svg"
+        alt="sun"
+        src="/sun.svg"
         style={{
           position: "absolute",
-          height: "100vh",
-          width: "100vw",
           objectFit: "cover",
+          height: "32vh",
+          width: "32vh",
+          left: "-12vh",
+          top: "-12vh",
+        }}
+      />
+      <img
+        alt="sun"
+        src="/mountain.svg"
+        style={{
+          position: "absolute",
+          objectFit: "cover",
+          bottom: "0",
+          height: "50vh",
+        }}
+      />
+      <img
+        alt="sun"
+        src="/clouds.svg"
+        style={{
+          position: "absolute",
+          objectFit: "cover",
+          right: "0",
+          height: "50vh",
         }}
       />
       <Box
@@ -63,15 +92,27 @@ export default function Login(props: LoginProps) {
             alignItems: "space-around",
             justifyContent: "center",
             zIndex: 5,
+            position: "relative",
           }}
         >
-          <Typography
+          <img
+            alt="logo"
+            src="/logo_white.svg"
+            height="20%"
             style={{
-              flex: 3,
+              position: "absolute",
+              right: 25,
+              top: 20,
+              transform: "rotate(15deg)",
+            }}
+          />
+          <Typography
+            fontWeight="bold"
+            sx={{
               color: "#fff",
-              textAlign: "center",
               fontSize: "4em",
-              fontWeight: "bold",
+              alignSelf: "center",
+              //transform: "translateX(-25%)",
             }}
           >
             Login
@@ -97,6 +138,7 @@ export default function Login(props: LoginProps) {
               margin: 2,
               fontSize: "1.25rem",
               border: "hidden",
+              color: "secondary.main",
             }}
             title="email"
             type="email"
@@ -121,6 +163,7 @@ export default function Login(props: LoginProps) {
               margin: 2,
               fontSize: "1.25rem",
               minWidth: "20%",
+              color: "secondary.main",
             }}
             color="secondary"
             title="email"
@@ -151,6 +194,6 @@ export default function Login(props: LoginProps) {
           </div>
         </Paper>
       </Box>
-    </>
+    </div>
   );
 }
