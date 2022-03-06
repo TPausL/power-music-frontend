@@ -21,7 +21,6 @@ export default function Login(props: LoginProps) {
 
   useEffect(() => {
     document.addEventListener("keypress", (e) => {
-      console.log(e.key);
       if (e.key === "Enter") {
         if (password && email) {
           user.login(email, password);

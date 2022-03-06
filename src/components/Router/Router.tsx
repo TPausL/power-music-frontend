@@ -1,4 +1,3 @@
-import { Box } from "@mui/material";
 import axios from "axios";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
@@ -11,7 +10,9 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import Bars from "../Bars";
+import Home from "../Home";
 import Login from "../Login";
+import PlaylistsProvider from "../PlaylistsProvider";
 import { useUser } from "../UserProvider";
 import { Service } from "../UserProvider/UserProvider";
 
@@ -42,12 +43,14 @@ export default function Router(props: RouterProps) {
             path="/"
             element={
               <Authorized>
-                <Bars />
+                <PlaylistsProvider>
+                  <Bars />
+                </PlaylistsProvider>
               </Authorized>
             }
           >
             <Route path="/auth/:service" element={<AuthCallback />} />
-            <Route path="" element={<Box>Home component here</Box>} />
+            <Route path="" element={<Home />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>

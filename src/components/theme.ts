@@ -1,5 +1,5 @@
 import { createTheme } from "@mui/material";
-import "typeface-dm-sans";
+import "typeface-lato";
 
 export const theme = createTheme({
   palette: {
@@ -25,6 +25,27 @@ export const theme = createTheme({
     error: {
       main: "#EF476F",
     },
+    youtube: {
+      main: "#ff0000",
+      light: "rgb(255, 51, 51)",
+      dark: "rgb(178, 0, 0)",
+    },
+    spotify: {
+      main: "#1DB954",
+      light: "rgb(74, 199, 118)",
+      dark: "rgb(20, 129, 58)",
+    },
   },
-  typography: { fontFamily: ["DM Sans"].join(",") },
+  typography: { fontFamily: ["Lato"].join(",") },
 });
+
+declare module "@mui/material/styles" {
+  interface Palette {
+    spotify: Palette["primary"];
+    youtube: Palette["primary"];
+  }
+  interface PaletteOptions {
+    spotify: PaletteOptions["primary"];
+    youtube: PaletteOptions["primary"];
+  }
+}
