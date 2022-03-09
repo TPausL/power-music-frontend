@@ -1,14 +1,13 @@
 import { findIconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { Group } from "@visx/group";
-import React, { SVGProps } from "react";
+import React, { memo } from "react";
 import { Playlist } from "../PlaylistsProvider/PlaylistsProvider";
-export interface ListProps extends SVGProps<SVGPathElement> {
+export interface ListProps {
   list: Playlist;
 }
-function List(props: ListProps) {
-  const { list, ...rest } = props;
+function ListSvg(props: ListProps) {
+  const { list } = props;
   return (
-    <Group {...rest}>
+    <>
       <g filter="url(#filter0_d_7_6)">
         <path
           fill={`url(#gradient_${list.source})`}
@@ -142,8 +141,8 @@ function List(props: ListProps) {
           xlinkHref={list.thumbnail}
         ></image>
       </defs>
-    </Group>
+    </>
   );
 }
 
-export default List;
+export default memo(ListSvg);

@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Service } from "../UserProvider/UserProvider";
 export type PlaylistsContextType = {
   playlists: Playlist[];
@@ -20,9 +20,13 @@ export interface Playlist {
 export default function PlaylistsProvider(props: PlaylistsProviderProps) {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
 
+  const loaded = useRef<boolean>(false);
   useEffect(() => {
-    axios.get("playlists").then((res) => setPlaylists(res.data.object));
-  }, []);
+    if (!loaded.current) {
+      axios.get("playlists").then((res) => setPlaylists(res.data.object));
+      loaded.current = true;
+    }
+  });
 
   return (
     <PlaylistsContext.Provider value={{ playlists }}>
