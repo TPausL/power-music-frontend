@@ -3,8 +3,9 @@ import { withBoundingRects, WithBoundingRectsProps } from "@visx/bounds";
 import { Drag, raise } from "@visx/drag";
 import { DragProps } from "@visx/drag/lib/Drag";
 import { Group } from "@visx/group";
-import { LinkVerticalCurve } from "@visx/shape";
+import { LinkHorizontalLine, LinkVerticalCurve } from "@visx/shape";
 import { map } from "lodash";
+import { norm } from "mathjs";
 import React, { useEffect, useState } from "react";
 import ListSvg from "../MoveableList/ListSvg";
 import { usePlaylists } from "../PlaylistsProvider";
@@ -73,9 +74,16 @@ const GraphContainer = withBoundingRects(
         {links.map((l, i) => {
           console.log(l);
           return (
-            <LinkVerticalCurve
+            <LinkHorizontalLine
+              path={(link: Link) => {
+                const [p2, p1] = getControlPoints(
+                  link.source.pos,
+                  link.target.pos
+                );
+                return `M ${link.source.pos[0]} ${link.source.pos[1]} C ${p1[0]} ${p1[1]}, ${p2[0]} ${p2[1]}, ${link.target.pos[0]} ${link.target.pos[1]}`;
+              }}
               key={i}
-              percent={0.5}
+              //percent={0.5}
               stroke="rgb(254,110,158,0.6)"
               strokeWidth="5"
               fill="none"
@@ -109,6 +117,43 @@ const GraphContainer = withBoundingRects(
     );
   }
 );
+
+const getControlPoints = (
+  a: [number, number],
+  b: [number, number]
+): [[number, number], [number, number]] => {
+  /* if (norm(b) > norm(a)) {
+    b = [a, (a = b)][0];
+  } */
+  const a0 = [0, 0];
+  const b0 = [b[0] - a[0], b[1] - a[1]];
+
+  const alpha = -Math.atan2(b[1] - a[1], b[0] - a[0]);
+
+  const b0r = [
+    a[0] * Math.cos(alpha) - a[1] * Math.sin(alpha),
+    a[0] * Math.sin(alpha) + a[1] * Math.cos(alpha),
+  ];
+
+  console.log(Math.cos(alpha));
+
+  const c1 = [b0r[0] / 3, b0r[0]];
+  const c2 = [(2 * b0r[0]) / 3, -b0r[0]];
+
+  const cr1 = [
+    c1[0] * Math.cos(-alpha) - c1[1] * Math.sin(-alpha),
+    c1[0] * Math.sin(-alpha) + c1[1] * Math.cos(-alpha),
+  ];
+  const cr2 = [
+    c2[0] * Math.cos(-alpha) - c2[1] * Math.sin(-alpha),
+    c2[0] * Math.sin(-alpha) + c2[1] * Math.cos(-alpha),
+  ];
+
+  const crt1 = [cr1[0] + a[0], cr1[1] + a[1]] as [number, number];
+  const crt2 = [cr2[0] + a[0], cr2[1] + a[1]] as [number, number];
+
+  return [crt1, crt2];
+};
 
 interface DragableProps extends Partial<DragProps>, WithBoundingRectsProps {
   node: Node;
