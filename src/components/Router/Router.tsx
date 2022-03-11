@@ -12,6 +12,7 @@ import {
 import Bars from "../Bars";
 import Home from "../Home";
 import Login from "../Login";
+import MergesProvider from "../MergesProvider";
 import PlaylistsProvider from "../PlaylistsProvider";
 import { useUser } from "../UserProvider";
 import { Service } from "../UserProvider/UserProvider";
@@ -44,7 +45,9 @@ export default function Router(props: RouterProps) {
             element={
               <Authorized>
                 <PlaylistsProvider>
-                  <Bars />
+                  <MergesProvider>
+                    <Bars />
+                  </MergesProvider>
                 </PlaylistsProvider>
               </Authorized>
             }
