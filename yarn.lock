@@ -5192,7 +5192,7 @@ fraction.js@^4.1.2:
   resolved "https://registry.yarnpkg.com/fraction.js/-/fraction.js-4.1.3.tgz#be65b0f20762ef27e1e793860bc2dfb716e99e65"
   integrity sha512-pUHWWt6vHzZZiQJcM6S/0PXfS+g6FM4BF5rj9wZyreivhQPdsh5PpE25VtSNxq80wHS5RfY51Ii+8Z0Zl/pmzg==
 
-fraction.js@^4.1.3:
+fraction.js@^4.1.3, fraction.js@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/fraction.js/-/fraction.js-4.2.0.tgz#448e5109a313a3527f5a3ab2119ec4cf0e0e2950"
   integrity sha512-MhLuK+2gUcnZe8ZHlaaINnQLl0xRIGRfcGk2yl8xoQAfHrSsL3rYu6FCmBdkdbhc9EPlwyGHewaRsvwRMJtAlA==
@@ -6736,6 +6736,21 @@ mathjs@^10.3.0:
     decimal.js "^10.3.1"
     escape-latex "^1.2.0"
     fraction.js "^4.1.3"
+    javascript-natural-sort "^0.7.1"
+    seedrandom "^3.0.5"
+    tiny-emitter "^2.1.0"
+    typed-function "^2.0.0"
+
+mathjs@^10.4.0:
+  version "10.4.0"
+  resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-10.4.0.tgz#7fa5d352c496cfd4ba1324b564b1948d49d6e10d"
+  integrity sha512-2zVrKvORwxeWbewweD5NDxkTgAMvqkwmMljHUPhDPJtX4sGJEL6ugFXQN597rhH9RGtnMxNzz/+hPGIr9UEWrg==
+  dependencies:
+    "@babel/runtime" "^7.17.2"
+    complex.js "^2.0.15"
+    decimal.js "^10.3.1"
+    escape-latex "^1.2.0"
+    fraction.js "^4.2.0"
     javascript-natural-sort "^0.7.1"
     seedrandom "^3.0.5"
     tiny-emitter "^2.1.0"
@@ -9089,6 +9104,14 @@ tough-cookie@^4.0.0:
     psl "^1.1.33"
     punycode "^2.1.1"
     universalify "^0.1.2"
+
+tpausl-linear-algebra@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/tpausl-linear-algebra/-/tpausl-linear-algebra-0.1.2.tgz#09e132d7b7bbc3d4c43658ec63253057d0e60cea"
+  integrity sha512-MR4fuimZrFA9KA8xrGslVI5pGG5HAI3CdHvdg87pL0p9YRPT4C6OYgmTvKydxCWvdCQRk6Fp55pwmZgdOPKpVg==
+  dependencies:
+    lodash "^4.17.21"
+    mathjs "^10.4.0"
 
 tr46@^1.0.1:
   version "1.0.1"

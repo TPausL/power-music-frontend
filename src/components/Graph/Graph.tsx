@@ -2,15 +2,15 @@ import { withBoundingRects } from "@visx/bounds";
 import { WithBoundingRectsProps } from "@visx/bounds/lib/enhancers/withBoundingRects";
 import { raise } from "@visx/drag";
 import { Group } from "@visx/group";
-import { LinkHorizontalLine } from "@visx/shape";
+import { Line, LinkHorizontalLine } from "@visx/shape";
 import { compact, find, map } from "lodash";
-import { add, divide, norm } from "mathjs";
+import { add, divide, multiply, norm } from "mathjs";
 import React, { useEffect, useState } from "react";
 import { useMerges } from "../MergesProvider";
 import MoveableList from "../MoveableList";
 import { usePlaylists } from "../PlaylistsProvider";
 import { Playlist } from "../PlaylistsProvider/PlaylistsProvider";
-
+import { Vector } from "tpausl-linear-algebra";
 export interface Node {
   initPos: [number, number];
   pos: [number, number];
@@ -68,10 +68,6 @@ function Graph({ parentRect }: GraphProps) {
       setNodes(ns);
     }
   }, [playlists, parentRect]);
-
-  const normalize = (v: [number, number]): [number, number] => {
-    return [v[0] / (norm(v) as number), v[1] / (norm(v) as number)];
-  };
   useEffect(() => {
     const ls = map(merges, (merge): Link | undefined => {
       const source = find(nodes, (n) => n.list.id === merge.left.id);
@@ -90,15 +86,31 @@ function Graph({ parentRect }: GraphProps) {
   return (
     <Group>
       {links.map((l, i) => {
-        const connection: [number, number] = add(
-          l.source.pos,
-          l.target.pos
-        ) as [number, number];
-        const mid: [number, number] = divide(connection, 2) as [number, number];
-        const nc: [number, number] = normalize(connection);
-        console.log(nc);
+        const s = new Vector(l.source.pos).add(new Vector(208 / 2, 117 / 2));
+        const t = new Vector(l.target.pos).add(new Vector(208 / 2, 117 / 2));
+        const con = s.subtract(t);
+        const mid = s.add(t).divide(2);
+        const controls = getBezierControlPoints(
+          s.asArray() as [number, number],
+          t.asArray() as [number, number]
+        );
+        const bezierValue = 1 / 20 / (con.length / (parentRect?.width ?? 1));
+        console.log(bezierValue);
+        const to = new Vector(
+          Bezier(
+            0.35,
+            s.asArray() as [number, number],
+            t.asArray() as [number, number],
+            controls[1],
+            controls[0]
+          ) as [number, number]
+        );
 
-        const nn = [nc[1], nc[0]];
+        const height = mid.subtract(to);
+        const base = height
+          .getPerpendicular()
+          .normalize()
+          .multiply((con.length * 1.5) / 40);
         return (
           <>
             <LinkHorizontalLine
@@ -115,24 +127,67 @@ function Graph({ parentRect }: GraphProps) {
                 return `M ${s[0]} ${s[1]} C ${p1[0]} ${p1[1]}, ${p2[0]} ${p2[1]}, ${t[0]} ${t[1]}`;
               }}
               key={i}
-              //percent={0.5}
               stroke="rgb(254,110,158,0.6)"
               strokeWidth="5"
               fill="none"
               data={l}
               source={(link: Link) => link.source}
               target={(link: Link) => link.target}
-              x={(node: Node) => node.pos[0] + 104}
-              y={(node: Node) => node.pos[1] + 117 / 2}
+              x={(node: Node) => node.pos[0]}
+              y={(node: Node) => node.pos[1]}
             />
-            {l.direction && (
-              <polygon
-                points={`${(add(mid, divide(1 / 30, nc)) as number[]).join(
+            {(l.direction === "right" || l.direction === "both") && (
+              <>
+                <path
+                  /* points={`${(add(mid, divide(1 / 30, nc)) as number[]).join(
                   ","
                 )}, ${(add(mid, divide(1 / 30, nn)) as number[]).join(",")}, ${(
                   add(mid, divide(-1 / 30, nn)) as number[]
-                ).join(",")}`}
-              />
+                ).join(",")}`} */
+
+                  strokeWidth={7}
+                  stroke={"black"}
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d={`M ${mid.add(height.scale(-1)).asArray().join(",")} ${mid
+                    .add(base)
+                    .asArray()
+                    .join(",")} ${mid
+                    .add(base.multiply(-1))
+                    .asArray()
+                    .join(",")} z`}
+                />
+
+                <circle r={2} fill="blue" cx={to[0]} cy={to[1]}></circle>
+              </>
+            )}
+
+            {(l.direction === "left" || l.direction === "both") && (
+              <>
+                <path
+                  /* points={`${(add(mid, divide(1 / 30, nc)) as number[]).join(
+                  ","
+                )}, ${(add(mid, divide(1 / 30, nn)) as number[]).join(",")}, ${(
+                  add(mid, divide(-1 / 30, nn)) as number[]
+                ).join(",")}`} */
+
+                  strokeWidth={7}
+                  stroke={"black"}
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d={`M ${mid.add(height).asArray().join(",")} ${mid
+                    .add(base)
+                    .asArray()
+                    .join(",")} ${mid
+                    .add(base.multiply(-1))
+                    .asArray()
+                    .join(",")} z`}
+                />
+
+                <circle r={2} fill="blue" cx={to[0]} cy={to[1]}></circle>
+              </>
             )}
           </>
         );
@@ -189,5 +244,24 @@ const getBezierControlPoints = (
 
   return [crt1, crt2];
 };
+
+function Bezier(
+  t: number,
+  a: [number, number],
+  b: [number, number],
+  c1: [number, number],
+  c2: [number, number]
+) {
+  return add(
+    add(
+      add(
+        multiply((1 - t) ** 3, a),
+        multiply(3, multiply(t, multiply((1 - t) ** 2, c1)))
+      ),
+      multiply(3, multiply(t ** 2, multiply(1 - t, c2)))
+    ),
+    multiply(t ** 3, b)
+  );
+}
 
 export default withBoundingRects(Graph);
