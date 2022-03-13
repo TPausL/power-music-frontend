@@ -79,7 +79,7 @@
     "style-loader": "^3.3.1",
     "tailwindcss": "^3.0.2",
     "terser-webpack-plugin": "^5.2.5",
-    "tpausl-linear-algebra": "^0.1.2",
+    "tpausl-linear-algebra": "^0.1.4",
     "typeface-dm-sans": "^1.1.13",
     "typeface-lato": "^1.1.13",
     "typescript": "^4.4.2",

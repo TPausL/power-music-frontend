@@ -9105,10 +9105,10 @@ tough-cookie@^4.0.0:
     punycode "^2.1.1"
     universalify "^0.1.2"
 
-tpausl-linear-algebra@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/tpausl-linear-algebra/-/tpausl-linear-algebra-0.1.2.tgz#09e132d7b7bbc3d4c43658ec63253057d0e60cea"
-  integrity sha512-MR4fuimZrFA9KA8xrGslVI5pGG5HAI3CdHvdg87pL0p9YRPT4C6OYgmTvKydxCWvdCQRk6Fp55pwmZgdOPKpVg==
+tpausl-linear-algebra@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/tpausl-linear-algebra/-/tpausl-linear-algebra-0.1.4.tgz#15e7a365488c7a466fb55c6281797a8bb4342260"
+  integrity sha512-7ksJkLfueZwCvL/dzqBA0+RqNvarNPy7fwJir48K+REs4XNqJGxVcYpga/nwizMMbSi029DSDCR4dla9FApxCQ==
   dependencies:
     lodash "^4.17.21"
     mathjs "^10.4.0"

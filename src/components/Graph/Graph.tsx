@@ -2,15 +2,14 @@ import { withBoundingRects } from "@visx/bounds";
 import { WithBoundingRectsProps } from "@visx/bounds/lib/enhancers/withBoundingRects";
 import { raise } from "@visx/drag";
 import { Group } from "@visx/group";
-import { Line, LinkHorizontalLine } from "@visx/shape";
 import { compact, find, map } from "lodash";
-import { add, divide, multiply, norm } from "mathjs";
+import { add, multiply } from "mathjs";
 import React, { useEffect, useState } from "react";
+import MergeConnection from "../MergeConnection";
 import { useMerges } from "../MergesProvider";
 import MoveableList from "../MoveableList";
 import { usePlaylists } from "../PlaylistsProvider";
 import { Playlist } from "../PlaylistsProvider/PlaylistsProvider";
-import { Vector } from "tpausl-linear-algebra";
 export interface Node {
   initPos: [number, number];
   pos: [number, number];
@@ -85,113 +84,9 @@ function Graph({ parentRect }: GraphProps) {
   }, [merges, nodes]);
   return (
     <Group>
-      {links.map((l, i) => {
-        const s = new Vector(l.source.pos).add(new Vector(208 / 2, 117 / 2));
-        const t = new Vector(l.target.pos).add(new Vector(208 / 2, 117 / 2));
-        const con = s.subtract(t);
-        const mid = s.add(t).divide(2);
-        const controls = getBezierControlPoints(
-          s.asArray() as [number, number],
-          t.asArray() as [number, number]
-        );
-        const bezierValue = 1 / 20 / (con.length / (parentRect?.width ?? 1));
-        console.log(bezierValue);
-        const to = new Vector(
-          Bezier(
-            0.35,
-            s.asArray() as [number, number],
-            t.asArray() as [number, number],
-            controls[1],
-            controls[0]
-          ) as [number, number]
-        );
-
-        const height = mid.subtract(to);
-        const base = height
-          .getPerpendicular()
-          .normalize()
-          .multiply((con.length * 1.5) / 40);
-        return (
-          <>
-            <LinkHorizontalLine
-              path={(link: Link) => {
-                const s = add(link.source.pos, [104, 117 / 2]) as [
-                  number,
-                  number
-                ];
-                const t = add(link.target.pos, [104, 117 / 2]) as [
-                  number,
-                  number
-                ];
-                const [p2, p1] = getBezierControlPoints(s, t);
-                return `M ${s[0]} ${s[1]} C ${p1[0]} ${p1[1]}, ${p2[0]} ${p2[1]}, ${t[0]} ${t[1]}`;
-              }}
-              key={i}
-              stroke="rgb(254,110,158,0.6)"
-              strokeWidth="5"
-              fill="none"
-              data={l}
-              source={(link: Link) => link.source}
-              target={(link: Link) => link.target}
-              x={(node: Node) => node.pos[0]}
-              y={(node: Node) => node.pos[1]}
-            />
-            {(l.direction === "right" || l.direction === "both") && (
-              <>
-                <path
-                  /* points={`${(add(mid, divide(1 / 30, nc)) as number[]).join(
-                  ","
-                )}, ${(add(mid, divide(1 / 30, nn)) as number[]).join(",")}, ${(
-                  add(mid, divide(-1 / 30, nn)) as number[]
-                ).join(",")}`} */
-
-                  strokeWidth={7}
-                  stroke={"black"}
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d={`M ${mid.add(height.scale(-1)).asArray().join(",")} ${mid
-                    .add(base)
-                    .asArray()
-                    .join(",")} ${mid
-                    .add(base.multiply(-1))
-                    .asArray()
-                    .join(",")} z`}
-                />
-
-                <circle r={2} fill="blue" cx={to[0]} cy={to[1]}></circle>
-              </>
-            )}
-
-            {(l.direction === "left" || l.direction === "both") && (
-              <>
-                <path
-                  /* points={`${(add(mid, divide(1 / 30, nc)) as number[]).join(
-                  ","
-                )}, ${(add(mid, divide(1 / 30, nn)) as number[]).join(",")}, ${(
-                  add(mid, divide(-1 / 30, nn)) as number[]
-                ).join(",")}`} */
-
-                  strokeWidth={7}
-                  stroke={"black"}
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d={`M ${mid.add(height).asArray().join(",")} ${mid
-                    .add(base)
-                    .asArray()
-                    .join(",")} ${mid
-                    .add(base.multiply(-1))
-                    .asArray()
-                    .join(",")} z`}
-                />
-
-                <circle r={2} fill="blue" cx={to[0]} cy={to[1]}></circle>
-              </>
-            )}
-          </>
-        );
-      })}
+      {links.map((l, i) => (
+        <MergeConnection link={l} />
+      ))}
       {nodes.map((n, i) => (
         <MoveableList
           key={n.list.id}
@@ -214,7 +109,7 @@ function Graph({ parentRect }: GraphProps) {
   );
 }
 
-const getBezierControlPoints = (
+export const getBezierControlPoints = (
   a: [number, number],
   b: [number, number]
 ): [[number, number], [number, number]] => {
@@ -227,8 +122,8 @@ const getBezierControlPoints = (
     b0[0] * Math.cos(alpha) - b0[1] * Math.sin(alpha),
     b0[0] * Math.sin(alpha) + b0[1] * Math.cos(alpha),
   ];
-  const c1 = [b0r[0] / 6, b0r[0] / 6];
-  const c2 = [(5 * b0r[0]) / 6, -b0r[0] / 6];
+  const c1 = [(5 * b0r[0]) / 6, -b0r[0] / 6];
+  const c2 = [b0r[0] / 6, b0r[0] / 6];
 
   const cr1 = [
     c1[0] * Math.cos(-alpha) - c1[1] * Math.sin(-alpha),
@@ -245,7 +140,7 @@ const getBezierControlPoints = (
   return [crt1, crt2];
 };
 
-function Bezier(
+export function Bezier(
   t: number,
   a: [number, number],
   b: [number, number],
@@ -264,4 +159,19 @@ function Bezier(
   );
 }
 
+export function BezierDerivative(
+  t: number,
+  a: [number, number],
+  b: [number, number],
+  c1: [number, number],
+  c2: [number, number]
+) {
+  return add(
+    add(
+      multiply(3 * (1 - t) ** 2, add(c1, multiply(a, -1))),
+      multiply(6 * (1 - t) * t, add(c2, multiply(c1, -1)))
+    ),
+    multiply(3 * t ** 2, add(b, multiply(c2, -1)))
+  );
+}
 export default withBoundingRects(Graph);
