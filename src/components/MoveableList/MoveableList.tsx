@@ -2,6 +2,7 @@ import { withBoundingRects } from "@visx/bounds";
 import { WithBoundingRectsProps } from "@visx/bounds/lib/enhancers/withBoundingRects";
 import Drag, { DragProps } from "@visx/drag/lib/Drag";
 import { Group } from "@visx/group";
+import { memo } from "react";
 import { Node } from "../Graph/Graph";
 import ListSvg from "./ListSvg";
 
@@ -20,20 +21,22 @@ function MoveableList({
   rect,
   ...rest
 }: DragableProps) {
+  const bounds = {
+    xMin: 0,
+    yMin: 0,
+    xMax: width - 208,
+    yMax: height - 117,
+  };
   return (
     <Drag
-      snapToPointer
+      snapToPointer={false}
       dx={node.initPos[0]}
       dy={node.initPos[1]}
-      restrict={{
-        xMin: (rect?.width ?? 0) / 2,
-        yMin: (rect?.height ?? 0) / 2,
-        xMax: width - (rect?.width ?? 0) / 2,
-        yMax: height - (rect?.height ?? 0) / 2,
-      }}
+      restrict={bounds}
       width={width}
       height={height}
       onDragMove={(args) => {
+        //console.log(args);
         onPositionChange && onPositionChange([args.dx, args.dy]);
       }}
       {...rest}
@@ -41,6 +44,8 @@ function MoveableList({
       {({ dragStart, dragEnd, dragMove, isDragging, x, y, dx, dy }) => {
         return (
           <Group
+            x={x}
+            y={y}
             transform={`translate(${dx},${dy})`}
             onMouseMove={dragMove}
             onMouseUp={dragEnd}
@@ -56,4 +61,4 @@ function MoveableList({
   );
 }
 
-export default withBoundingRects(MoveableList);
+export default memo(withBoundingRects(MoveableList));

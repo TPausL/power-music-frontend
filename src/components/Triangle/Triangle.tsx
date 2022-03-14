@@ -5,12 +5,11 @@ export interface TriangleProps extends SVGProps<SVGPathElement> {
   point: Vector;
   slope: number;
   direction: "source" | "target";
-  size: number;
-  turn: boolean;
+  size?: number;
+  turn?: boolean;
 }
 export default function Triangle(props: TriangleProps) {
-  const { point, direction, slope, size, turn, ...rest } = props;
-  const correction = slope / Math.abs(slope);
+  const { point, direction, slope, size = 30, turn, ...rest } = props;
   const slopeV = new Vector(1, slope)
     .normalize()
     .scale(turn ? -1 : 1)
