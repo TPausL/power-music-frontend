@@ -7,5 +7,5 @@ export interface YoutubeServiceItemProps {
   user: ServiceUser;
 }
 export default function YoutubeServiceItem(props: YoutubeServiceItemProps) {
-  return <SkeletonItem icon={faYoutube} {...props} />;
+  return <SkeletonItem icon={"youtube"} {...props} />;
 }

@@ -45,7 +45,7 @@ function SkeletonItem(props: SkeletonItemProps) {
             {""}
           </Avatar>
         </ListItemText>
-        <FontAwesomeIcon icon={open ? faChevronUp : faChevronDown} />
+        <FontAwesomeIcon icon={open ? "chevron-up" : "chevron-down"} />
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>

@@ -20,36 +20,24 @@ import { Service } from "../UserProvider/UserProvider";
 export interface RouterProps {}
 export default function Router(props: RouterProps) {
   const user = useUser();
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(true);
   useEffect(() => {
-    const token = localStorage.getItem("pm_at");
-    if (token) {
-      const s = token.split(",");
-      if (!moment().isAfter(moment(s[1]))) {
-        axios.defaults.headers.common["Authorization"] = "Bearer " + s[0];
-        user.fetch().then(() => setLoaded(true));
-      } else {
-        setLoaded(true);
-      }
-    } else {
-      setLoaded(true);
-    }
+    user.login();
   }, []);
+  console.log("test")
   return (
     <>
-      {loaded ? (
+      {user.isLoggedIn() ? (
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route
             path="/"
             element={
-              <Authorized>
                 <PlaylistsProvider>
                   <MergesProvider>
                     <Bars />
                   </MergesProvider>
                 </PlaylistsProvider>
-              </Authorized>
             }
           >
             <Route path="/auth/:service" element={<AuthCallback />} />
@@ -58,7 +46,7 @@ export default function Router(props: RouterProps) {
           </Route>
         </Routes>
       ) : (
-        <></>
+        <>not logged in</>
       )}
     </>
   );
@@ -81,8 +69,6 @@ function Authorized({ children }: { children: JSX.Element }) {
   const user = useUser();
   let location = useLocation();
 
-  if (!user.isLoggedIn()) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
+  user.login();
   return children;
 }

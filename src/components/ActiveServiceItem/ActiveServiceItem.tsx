@@ -42,7 +42,7 @@ export default function ActiveServiceItem(props: ActiveServiceItemProps) {
           ></Avatar>
         </ListItemAvatar>
         <ListItemText>{name}</ListItemText>
-        <FontAwesomeIcon icon={open ? faChevronUp : faChevronDown} />
+        <FontAwesomeIcon icon={open ? "chevron-up" : "chevron-down"} />
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
@@ -59,7 +59,7 @@ export default function ActiveServiceItem(props: ActiveServiceItemProps) {
                   edge="end"
                   sx={{ mr: 0.25 }}
                 >
-                  <FontAwesomeIcon icon={faRefresh} />
+                  <FontAwesomeIcon icon="refresh" />
                 </IconButton>
               </ListItemSecondaryAction>
             )}

@@ -19,9 +19,9 @@ export interface MergesProviderProps {
 export default function MergesProvider(props: MergesProviderProps) {
   const [merges, setMerges] = useState<Merge[]>([]);
   React.useEffect(() => {
-    axios.get("merges").then((res) => {
-      setMerges(res.data.object);
-    });
+    // axios.get("merges").then((res) => {
+    //   setMerges(res.data.object);
+    // });
   }, []);
   return (
     <MergesContext.Provider value={{ merges }}>

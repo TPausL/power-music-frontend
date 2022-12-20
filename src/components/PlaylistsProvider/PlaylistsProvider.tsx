@@ -23,7 +23,7 @@ export default function PlaylistsProvider(props: PlaylistsProviderProps) {
   const loaded = useRef<boolean>(false);
   useEffect(() => {
     if (!loaded.current) {
-      axios.get("playlists").then((res) => setPlaylists(res.data.object));
+      //axios.get("playlists").then((res) => setPlaylists(res.data.object));
       loaded.current = true;
     }
   });

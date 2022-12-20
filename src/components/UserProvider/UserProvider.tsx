@@ -6,12 +6,14 @@ import moment from "moment";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import config from "../../config.json";
+import {Configuration, FrontendApi, IdentityApi, OAuth2Api, Session} from "@ory/client";
+
 
 export type UserContextType = {
   data?: User;
   services: ServiceUser[];
   isLoggedIn: () => boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: () => Promise<void>;
   connectService: (service: Service) => Promise<void>;
   serviceCode: (service: Service, code: string) => Promise<void>;
   fetch: () => Promise<void>;
@@ -26,7 +28,7 @@ export const UserContext = React.createContext<UserContextType>({
 });
 export const services = ["youtube", "spotify"] as const;
 export type Service = typeof services[number];
-library.add(faSpotify, faYoutube);
+//library.add(faSpotify, faYoutube);
 
 export interface UserProviderProps {
   children: React.ReactNode;
@@ -40,17 +42,34 @@ export type ServiceUser = Omit<User, "id"> & {
   service: Service;
   image: string;
 };
-axios.defaults.baseURL = config.backend_uri;
+axios.defaults.baseURL = process.env.REACT_APP_BACKEND_URL;
 axios.defaults.headers.common["Content-Type"] = "application/json";
+axios.defaults.withCredentials = true;
+
+  //const basePath =  "http://localhost:4000/.ory";
+const ory = new FrontendApi(new Configuration({
+  basePath:"http://localhost:4000",
+   baseOptions: {
+    withCredentials: true,
+   }
+}))
+
 
 export default function UserProvider(props: UserProviderProps) {
   const navigate = useNavigate();
   const [user, setUser] = useState<User | undefined>(undefined);
   const [services, setServices] = useState<ServiceUser[]>([]);
+
+  const [session, setSession] = useState<Session | undefined>()
+  const [logoutUrl, setLogoutUrl] = useState<string | undefined>()
+
+
   const redirect_uri = (service: Service) =>
     `http${config.self.https ? "s" : ""}://${config.self.host}:${
       config.self.port
     }/auth/${service}`;
+
+
   const connectService = async (service: Service) => {
     const res = await axios.get(
       `http://localhost:3000/auth/${service}/login?redirect_uri=` +
@@ -58,6 +77,7 @@ export default function UserProvider(props: UserProviderProps) {
     );
     window.location.href = res.data.object.redirect_uri;
   };
+
   const serviceCode = async (service: Service, code: string) => {
     try {
       const res = await axios.post(`auth/${service}/code`, {
@@ -71,57 +91,27 @@ export default function UserProvider(props: UserProviderProps) {
   };
 
   const fetch = async () => {
-    const userRes = await axios.get("user");
-    setUser(omit(userRes.data.object, "service_connections") as User);
-    setServices(userRes.data.object.service_connections);
+    //const userRes = await axios.get("user");
+    //setUser(omit(userRes.data.object, "service_connections") as User);
+    //setServices(userRes.data.object.service_connections);
   };
 
-  const login = async (email: string, password: string) => {
-    const params = new URLSearchParams();
-    const redirect_uri = `http${config.self.https ? "s" : ""}://${
-      config.self.host
-    }:${config.self.port}/auth/callback`;
-    params.append("client_id", config.client_id);
-    params.append("redirect_uri", redirect_uri);
-    params.append("response_type", "code");
+  const login = async () => {
     try {
-      const authRes = await axios.get("/oauth/authorize?" + params.toString(), {
-        auth: { password, username: email },
-      });
-      const code = new URL(authRes.data.redirect_uri).searchParams.get("code");
-      try {
-        const tokenRes = await axios.post("/oauth/token", {
-          grant_type: "authorization_code",
-          code,
-          client_id: config.client_id,
-          client_secret: config.client_secret,
-          redirect_uri,
-        });
-        window.localStorage.setItem(
-          "pm_at",
-          tokenRes.data.access_token +
-            "," +
-            moment().add(tokenRes.data.expires_in).toISOString()
-        );
-        axios.defaults.headers.common["Authorization"] =
-          "Bearer " + tokenRes.data.access_token;
-        try {
-          await fetch();
-          navigate("/");
-        } catch (e) {
-          throw e;
-        }
-      } catch (e) {
-        throw e;
-      }
-    } catch (e) {
-      throw e;
-    }
+      const session = await ory.toSession();
+      console.log(session.data);
+      setSession(session.data);
+      ory.createBrowserLogoutFlow().then(({data}) => setLogoutUrl(data.logout_url))
+      axios.get("/")
+ 
+    } catch  (e){
+      ory.createBrowserLoginFlow({returnTo: "http://localhost:3000"}).then(({data}) => window.location.replace(data.request_url))
+    } 
   };
   return (
     <UserContext.Provider
       value={{
-        isLoggedIn: () => (user ? true : false),
+        isLoggedIn: () => (session ? true : false),
         fetch,
         login,
         services,

@@ -7,5 +7,5 @@ export interface SpotifyServiceItemProps {
   user: ServiceUser;
 }
 export default function SpotifyServiceItem(props: SpotifyServiceItemProps) {
-  return <SkeletonItem icon={faSpotify} {...props} />;
+  return <SkeletonItem icon={"spotify"} {...props} />;
 }

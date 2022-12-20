@@ -23,7 +23,7 @@ export default function Login(props: LoginProps) {
     document.addEventListener("keypress", (e) => {
       if (e.key === "Enter") {
         if (password && email) {
-          user.login(email, password);
+          user.login();
         }
       }
     });
@@ -123,7 +123,7 @@ export default function Login(props: LoginProps) {
                   color={"#fff"}
                   size="2x"
                   style={{ marginRight: 8 }}
-                  icon={faEnvelope}
+                  icon={"envelope"}
                 />
               </InputAdornment>
             }
@@ -149,7 +149,7 @@ export default function Login(props: LoginProps) {
                   color={"#fff"}
                   style={{ marginRight: 8 }}
                   size="2x"
-                  icon={faKey}
+                  icon={"key"}
                 />
               </InputAdornment>
             }
@@ -181,7 +181,7 @@ export default function Login(props: LoginProps) {
             <Button
               onClick={() => {
                 if (password && email) {
-                  user.login(email, password);
+                  user.login();
                 }
               }}
               variant="contained"

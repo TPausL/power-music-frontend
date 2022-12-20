@@ -6,6 +6,7 @@ import { theme } from "./components/theme";
 import TopBar from "./components/TopBar";
 import UserProvider from "./components/UserProvider";
 function App() {
+  console.log(process.env)
   return (
     <ThemeProvider theme={theme}>
       <UserProvider>

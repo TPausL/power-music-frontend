@@ -10,9 +10,10 @@
     "@fortawesome/free-brands-svg-icons": "^6.0.0",
     "@fortawesome/free-regular-svg-icons": "^6.0.0",
     "@fortawesome/free-solid-svg-icons": "^6.0.0",
-    "@fortawesome/react-fontawesome": "^0.1.17",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@mui/material": "^5.4.3",
     "@mui/system": "^5.4.3",
+    "@ory/client": "^1.1.1",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.3",
     "@svgr/webpack": "^5.5.0",
     "@testing-library/jest-dom": "^5.14.1",
@@ -113,7 +114,8 @@
     ]
   },
   "devDependencies": {
-    "@mui/types": "^7.1.2"
+    "@mui/types": "^7.1.2",
+    "@fortawesome/fontawesome-common-types": "^6.2.1"
   },
   "jest": {
     "roots": [
