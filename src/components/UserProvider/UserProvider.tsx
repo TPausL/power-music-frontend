@@ -1,7 +1,7 @@
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faSpotify, faYoutube } from "@fortawesome/free-brands-svg-icons";
 import axios from "axios";
-import { omit } from "lodash";
+import { omit, map } from "lodash";
 import moment from "moment";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -14,16 +14,12 @@ export type UserContextType = {
   services: ServiceUser[];
   isLoggedIn: () => boolean;
   login: () => Promise<void>;
-  connectService: (service: Service) => Promise<void>;
-  serviceCode: (service: Service, code: string) => Promise<void>;
-  fetch: () => Promise<void>;
+  logout: () => Promise<void>;
 };
 export const UserContext = React.createContext<UserContextType>({
   isLoggedIn: () => false,
   login: async () => undefined,
-  connectService: async () => undefined,
-  fetch: async () => undefined,
-  serviceCode: async (code: string) => undefined,
+  logout: async () => undefined,
   services: [],
 });
 export const services = ["youtube", "spotify"] as const;
@@ -38,7 +34,7 @@ export interface User {
   name: string;
   email: string;
 }
-export type ServiceUser = Omit<User, "id"> & {
+export type ServiceUser= Omit<User, "id"> & {
   service: Service;
   image: string;
 };
@@ -56,12 +52,12 @@ const ory = new FrontendApi(new Configuration({
 
 
 export default function UserProvider(props: UserProviderProps) {
-  const navigate = useNavigate();
-  const [user, setUser] = useState<User | undefined>(undefined);
   const [services, setServices] = useState<ServiceUser[]>([]);
 
   const [session, setSession] = useState<Session | undefined>()
   const [logoutUrl, setLogoutUrl] = useState<string | undefined>()
+  const [name, setName] = useState<string>("")
+  const [email, setEmail] = useState<string>("")
 
 
   const redirect_uri = (service: Service) =>
@@ -70,53 +66,40 @@ export default function UserProvider(props: UserProviderProps) {
     }/auth/${service}`;
 
 
-  const connectService = async (service: Service) => {
-    const res = await axios.get(
-      `http://localhost:3000/auth/${service}/login?redirect_uri=` +
-        redirect_uri(service)
-    );
-    window.location.href = res.data.object.redirect_uri;
-  };
-
-  const serviceCode = async (service: Service, code: string) => {
-    try {
-      const res = await axios.post(`auth/${service}/code`, {
-        code: code,
-        redirect_uri: redirect_uri(service),
-      });
-      setServices([...services, res.data.object]);
-    } catch (e) {
-      throw e;
-    }
-  };
-
-  const fetch = async () => {
-    //const userRes = await axios.get("user");
-    //setUser(omit(userRes.data.object, "service_connections") as User);
-    //setServices(userRes.data.object.service_connections);
-  };
 
   const login = async () => {
     try {
-      const session = await ory.toSession();
-      console.log(session.data);
+      const session = await ory.toSession({});
       setSession(session.data);
       ory.createBrowserLogoutFlow().then(({data}) => setLogoutUrl(data.logout_url))
-      axios.get("/")
- 
+      const user: {name: string,email: string, providers: {name: Service |  "google", user_data: {image: string, id: string, name: string, email: string}}[]} = (await axios.get("/user")).data;
+      setName(user.name);
+      setEmail(user.email);
+      console.log("testtttttt");
+      setServices(map(user.providers, (p) => ({service: p.name == "google" ? "youtube" : p.name, ...omit(p.user_data, "id") })));
+      //setServices(map(user.providers, (p) => ({service: p.name, ...p.user_data })));
     } catch  (e){
-      ory.createBrowserLoginFlow({returnTo: "http://localhost:3000"}).then(({data}) => window.location.replace(data.request_url))
+        console.log(e);
+     // ory.createBrowserLoginFlow({returnTo: "http://localhost:3000"}).then(({data}) => window.location.replace(data.request_url))
     } 
   };
+
+
+  const logout = async () => {
+    window.location.replace(logoutUrl as string);
+  }
   return (
     <UserContext.Provider
       value={{
         isLoggedIn: () => (session ? true : false),
-        fetch,
         login,
+        logout,
         services,
-        connectService,
-        serviceCode,
+        data: {
+            id: session?.identity.id ?? "",
+            name: session?.identity.traits.name ?? "",
+            email: session?.identity.traits.email ?? "",
+        }
       }}
     >
       {props.children}

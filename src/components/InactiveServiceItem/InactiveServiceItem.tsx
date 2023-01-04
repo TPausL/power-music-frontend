@@ -36,7 +36,7 @@ export default function InactiveServiceItem(props: InactiveServiceItemProps) {
         <ListItemSecondaryAction>
           <Button
             variant="contained"
-            onClick={() => user.connectService(service)}
+            onClick={() => console.log("connect account")}
           >
             Login
           </Button>

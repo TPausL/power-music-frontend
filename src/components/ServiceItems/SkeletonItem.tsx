@@ -1,4 +1,4 @@
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { IconProp, IconName } from "@fortawesome/fontawesome-svg-core";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,22 +11,21 @@ import {
   ListItemText,
 } from "@mui/material";
 import React, { useState } from "react";
+import { solid, regular, brands, icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 import { ServiceUser } from "../UserProvider/UserProvider";
 export interface SkeletonItemProps {
   user: ServiceUser;
-  icon: IconProp;
+  icon: string;
 }
 function SkeletonItem(props: SkeletonItemProps) {
   const { user, icon } = props;
   const [open, setOpen] = useState<boolean>(false);
   return (
     <>
-      {" "}
       <ListItemButton onClick={() => setOpen(!open)}>
         <ListItemAvatar sx={{ minWidth: 0, pr: 1 }}>
           <Avatar sx={{ bgcolor: "success.main" }}>
-            {" "}
-            <FontAwesomeIcon color={"white"} icon={icon} size={"lg"} />
+            <FontAwesomeIcon color={"white"} icon={["fab", icon as IconName]} size={"lg"} />
           </Avatar>
         </ListItemAvatar>
         <ListItemText

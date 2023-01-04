@@ -40,7 +40,6 @@ export default function Router(props: RouterProps) {
                 </PlaylistsProvider>
             }
           >
-            <Route path="/auth/:service" element={<AuthCallback />} />
             <Route path="" element={<Home />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
@@ -50,19 +49,6 @@ export default function Router(props: RouterProps) {
       )}
     </>
   );
-}
-
-function AuthCallback() {
-  const user = useUser();
-  const params = useParams();
-  const serachParams = useSearchParams();
-  useEffect(() => {
-    user.serviceCode(
-      params.service as Service,
-      serachParams[0].get("code") as string
-    );
-  }, []);
-  return <Navigate to="/" replace />;
 }
 
 function Authorized({ children }: { children: JSX.Element }) {

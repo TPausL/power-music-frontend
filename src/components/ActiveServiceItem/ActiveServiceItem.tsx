@@ -1,7 +1,7 @@
 import {
   faChevronDown,
   faChevronUp,
-  faRefresh,
+  faSync,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -81,7 +81,7 @@ export default function ActiveServiceItem(props: ActiveServiceItemProps) {
                 </ListItemText>
                 <ListItemSecondaryAction>
                   <IconButton color="secondary" edge="end" sx={{ mr: 0.25 }}>
-                    <FontAwesomeIcon icon={faRefresh} />
+                    <FontAwesomeIcon icon={faSync} />
                   </IconButton>
                 </ListItemSecondaryAction>
  */
