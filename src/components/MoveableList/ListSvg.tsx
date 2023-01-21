@@ -1,6 +1,6 @@
-import { findIconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { findIconDefinition, IconName } from "@fortawesome/fontawesome-svg-core";
 import React, { memo } from "react";
-import { Playlist } from "../PlaylistsProvider/PlaylistsProvider";
+import { Playlist } from "../../api";
 export interface ListProps {
   list: Playlist;
 }
@@ -66,7 +66,7 @@ function ListSvg(props: ListProps) {
           }}
           fill="#fff"
           d={
-            findIconDefinition({ prefix: "fab", iconName: list.source })
+            findIconDefinition({ prefix: "fab", iconName: list.source as IconName })
               .icon[4] as string
           }
         ></path>

@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { Playlist } from "../PlaylistsProvider/PlaylistsProvider";
+import { Playlist } from "../../api";
 export type Direction = "left" | "right" | "both";
 export interface Merge {
   left: Playlist;

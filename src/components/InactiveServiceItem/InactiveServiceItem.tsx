@@ -33,14 +33,6 @@ export default function InactiveServiceItem(props: InactiveServiceItemProps) {
           </Avatar>
         </ListItemAvatar>
         <ListItemText>{service}</ListItemText>
-        <ListItemSecondaryAction>
-          <Button
-            variant="contained"
-            onClick={() => console.log("connect account")}
-          >
-            Login
-          </Button>
-        </ListItemSecondaryAction>
       </ListItem>
     </>
   );

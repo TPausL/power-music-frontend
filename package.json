@@ -59,6 +59,7 @@
     "mathjs": "^10.3.0",
     "mini-css-extract-plugin": "^2.4.5",
     "moment": "^2.29.1",
+    "oazapfts": "^4.5.2",
     "postcss": "^8.4.4",
     "postcss-flexbugs-fixes": "^5.0.2",
     "postcss-loader": "^6.2.1",
@@ -95,7 +96,8 @@
     "nn": "pnpm nn",
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js"
+    "test": "node scripts/test.js",
+    "gen-api": "oazapfts http://127.0.0.1:8000/openapi src/api.ts"
   },
   "eslintConfig": {
     "extends": [
