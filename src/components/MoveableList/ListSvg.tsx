@@ -1,6 +1,7 @@
 import { findIconDefinition, IconName } from "@fortawesome/fontawesome-svg-core";
 import React, { memo } from "react";
 import { Playlist } from "../../api";
+import { ellipsize } from "../../utils";
 export interface ListProps {
   list: Playlist;
 }
@@ -16,14 +17,15 @@ function ListSvg(props: ListProps) {
       </g>
       <text
         fill="#fff"
-        style={{ whiteSpace: "pre" }}
+        style={{ whiteSpace: "pre", wordWrap: "break-word" }}
         fontFamily="Lato"
         fontSize="1rem"
         fontWeight="800"
+        
         letterSpacing="0em"
       >
         <tspan x="20" y="63">
-          {list.title}
+          {ellipsize(list.title, 20)}
         </tspan>
       </text>
       <text

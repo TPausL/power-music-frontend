@@ -22,6 +22,29 @@ export default function MergesProvider(props: MergesProviderProps) {
     // axios.get("merges").then((res) => {
     //   setMerges(res.data.object);
     // });
+    setMerges([{
+      direction: "both",
+      left: {
+        id: "spotify:playlist:4dDnPnBwNA9csMmR1Q0H1P",
+        count: 5,
+        editable: true,
+        hidden: false,
+        link: "",
+        source: "spotify",
+        thumbnail: "",
+        title: "all the music"
+      },
+      right: {
+        id: "spotify:playlist:5ztgw6XiQOWNP1PrQT0Kyi",
+        count: 100,
+        editable: true,
+        hidden: false,
+        link: "",
+        source: "spotify",
+        thumbnail: "",
+        title: "common jamer"
+      }
+    }])
   }, []);
   return (
     <MergesContext.Provider value={{ merges }}>

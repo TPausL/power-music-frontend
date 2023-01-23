@@ -1,14 +1,15 @@
 import { withBoundingRects } from "@visx/bounds";
 import { WithBoundingRectsProps } from "@visx/bounds/lib/enhancers/withBoundingRects";
-import { raise } from "@visx/drag";
+import { raise, useDrag } from "@visx/drag";
 import { Group } from "@visx/group";
 import { compact, filter, find, map } from "lodash";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import MergeConnection from "../MergeConnection";
 import { useMerges } from "../MergesProvider";
 import MoveableList from "../MoveableList";
 import { usePlaylists } from "../PlaylistsProvider";
 import { Playlist } from "../../api";
+import { MouseTouchOrPointerEvent } from "@visx/drag/lib/useDrag";
 export interface Node {
   initPos: [number, number];
   pos: [number, number];
@@ -21,12 +22,17 @@ export interface Link {
   direction: "left" | "right" | "both";
 }
 
-export interface GraphProps extends WithBoundingRectsProps {}
-function Graph({ parentRect }: GraphProps) {
+export interface GraphProps extends WithBoundingRectsProps {
+  lineStartHandler: (event: MouseTouchOrPointerEvent) => void;
+}
+function Graph({ parentRect, lineStartHandler }: GraphProps) {
   const { playlists } = usePlaylists();
   const { merges } = useMerges();
   const [nodes, setNodes] = useState<Node[]>([]);
   const [links, setLinks] = useState<Link[]>([]);
+
+
+
   useEffect(() => {
     const sizeX = (parentRect?.width ?? 0) - 208;
     const sizeY = (parentRect?.height ?? 0) - 117;
@@ -63,12 +69,13 @@ function Graph({ parentRect }: GraphProps) {
     setLinks(compact(ls));
   }, [merges, nodes]);
   return (
-    <Group>
+    <Group >
       {links.map((l, i) => (
         <MergeConnection link={l} />
       ))}
       {nodes.map((n, i) => (
         <MoveableList
+          lineStartHandler={lineStartHandler}
           key={n.list.id}
           onDragStart={() => {
             setNodes(raise(nodes, i));

@@ -64,3 +64,11 @@ export function BezierDerivative(
     multiply(3 * t ** 2, add(b, multiply(c2, -1)))
   );
 }
+
+
+export function ellipsize(text: string, width: number) {
+  if (text.length <= width - 3) {
+    return text;
+  }
+  return text.substring(0, width - 3) + "..."
+}
